@@ -1,0 +1,113 @@
+
+
+
+
+cargar base de datos 
+```{r, warning=FALSE, message=FALSE}
+library(tidyverse)
+df1 = read_csv("data/data.csv")
+
+```
+
+ 
+
+
+assign it to an object
+```{r}
+my_new_df1 = separate(data = df1, col = info, into = c("word", "stress"), sep = "_") 
+my_new_df1
+```
+
+
+ggplot del comportamieto de cada variable separado por lexical stress
+  
+```{r}
+
+  ggplot(my_new_df1, aes(fill=stress, y=durationV, x=word)) + 
+  geom_bar(position="dodge", stat="identity")
+  
+  
+ggplot(my_new_df1, aes(fill=stress, y=f0, x=word)) + 
+  geom_bar(position="dodge", stat="identity") +
+  ylab('f0')
+  
+  ggplot(my_new_df1, aes(fill=stress, y=int, x=word)) + 
+  geom_bar(position="dodge", stat="identity") +
+  ylab('int')
+  
+```
+  
+  
+ 
+
+  
+
+histograma de f0
+
+```{r}
+ ggplot(data = my_new_df1, aes(x=f0)) + 
+  geom_histogram(bins = 5)
+
+```
+
+histograma de durationV
+  
+
+```{r}
+ ggplot(data = my_new_df1, aes(x=durationV)) + 
+  geom_histogram(bins = 7) # bins numero de barras withdt :ancho de barra 
+
+
+```
+  
+
+  
+  histograma de  int
+  
+```{r}
+  ggplot(data = my_new_df1, aes(x=int)) + 
+  geom_histogram(bins = 7) # bins numero de barras withdt :ancho de barra 
+
+
+```
+  
+  media de las variables
+ 
+```{r} 
+my_new_df1 %>%
+    summarise(media_dur = mean(durationV), media_f0 = mean(f0), meadia_int = mean(int)) 
+
+```
+
+  media de las variables separado por stress
+```{r}
+my_new_df1 %>%
+   group_by(stress) %>%
+    summarise(media_dur = mean(durationV), media_f0 = mean(f0), meadia_int = mean(int)) 
+
+
+
+```
+  
+ 
+    
+  crear una nueva base de datos para graficar los promedios de cada variable 
+```{r}
+ my_new_df2 = tibble(stress = factor(c(1,2,1,2, 1,2)), media = c(0.094, 0.078, 173, 157, 68.5, 60.2),
+                    variables = c('durationV', 'durationV', 'f0', 'f0', 'int', 'int'))
+
+```
+  
+    
+ 
+
+grafico con las medias de las variables separadas por stress
+```{r}
+ggplot(my_new_df2, aes(fill=stress, y=media, x=variables)) + 
+  geom_bar(position="dodge", stat="identity") 
+
+```
+
+
+
+  
